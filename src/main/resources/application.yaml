@@ -1,0 +1,40 @@
+server:
+  port: 20270
+spring:
+  application:
+    name: kafkastream
+
+  cloud:
+    function:
+      definition: processProduct;processMessage;processProductDetail;processOracleMessage
+    stream:
+      bindings:
+        processProductDetail-in-0:
+          destination: product-detail
+          group: monitor-group2
+          content-type: application/json
+        processProduct-in-0:
+          destination: test-product # topic_name
+          group: monitor-group # consumer_group_id
+          content-type: application/json
+        processMessage-in-0:
+          destination: test-topic
+        processProductDetail-out-0:
+          destination: processed-product-detail
+          content-type: application/json
+        processOracleMessage-in-0:
+          destination: cdc.DEBEZIUMMKR.PRODUCTS
+          group: oracle-monitor-group
+          content-type: application/*+avro
+
+      kafka:
+        binder:
+          brokers: localhost:29092,localhost:29094,localhost:29096
+        bindings:
+          processOracleMessage-in-0:
+            consumer:
+              configuration:
+                schema.registry.url: http://localhost:8081
+                auto.offset.reset: earliest
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer

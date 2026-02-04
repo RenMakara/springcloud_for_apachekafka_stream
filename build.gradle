@@ -1,0 +1,70 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.2'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'co.istad.makara'
+version = '0.0.1-SNAPSHOT'
+description = 'Spring cloud stream with kafka'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2025.1.0")
+}
+
+
+dependencies {
+
+    // Required for Spring Cloud Stream to handle Avro
+    implementation 'org.apache.avro:avro:1.12.1'
+    implementation 'io.confluent:kafka-avro-serializer:7.5.0'
+
+
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.apache.kafka:kafka-streams'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka-streams'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-kafka-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('bootBuildImage') {
+    runImage = 'paketobuildpacks/ubuntu-noble-run:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// add this for confluent maven repository of avro serializer
+repositories {
+    mavenCentral()
+    maven { url "https://packages.confluent.io/maven/" }
+}
