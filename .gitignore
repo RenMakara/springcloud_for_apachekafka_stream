@@ -1,3 +1,4 @@
+workflowof_cdc_oracle_conn_for_springcloud_kafkastream.png
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

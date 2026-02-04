@@ -18,6 +18,8 @@ Spring Cloud Stream Consumer (GenericRecord)
 Console Output
 
 ```
+![image](workflowof_cdc_oracle_conn_for_springcloud_kafkastream.png)
+
 ✅ Prerequisites
 
     Ensure the following are installed and configured:
